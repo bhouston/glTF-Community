@@ -133,12 +133,8 @@ Light maps usually include light from the environment (sky) as well. Application
 
 _This section is non-normative._
 
-- **Unwrapping and padding.** Light map UV charts should not overlap, and should be padded and dilated so that bilinear filtering and mipmapping don't bleed between charts.
-- **Dynamic range.** Irradiance often exceeds `1.0`. With 8-bit formats such as PNG and JPEG, store normalized values and put the scale factor in `intensity`. Store dark scenes with care to avoid banding. Where available, texture extensions providing higher dynamic range or higher precision formats may be used for the referenced texture. The Hubs Blender add-on, for example, writes RGBE `.hdr` light maps using `MOZ_texture_rgbe`.
-- **Static content.** Light maps only describe the lighting of the geometry and lights at bake time. They are suited to static geometry. A light map on a moving or deforming mesh stays attached to the surface and will look incorrect.
 - **Instancing.** The light map belongs to the material and is addressed through mesh texture coordinates. A mesh referenced by several nodes therefore shares one light map region. To give instances unique lighting, use distinct meshes or primitives with their own `TEXCOORD` data, or distinct materials with different `KHR_texture_transform` offsets.
 - **Environment lighting.** Some renderers add diffuse environment lighting to every material by default. Stock three.js, for example, adds `scene.environment` irradiance even when a light map is present, while Hubs' three.js fork skips it for light-mapped materials. Implementations should suppress it, or document that applications must not combine the two.
-- **Existing content.** Some older readers ignore `texCoord` and `KHR_texture_transform` and always sample `TEXCOORD_1`. Spoke, the Hubs scene editor, decoded light maps as sRGB, so 8-bit light maps authored and previewed only in Spoke may look different in conforming readers.
 
 ## Fallback
 
@@ -150,11 +146,11 @@ This extension is optional. Assets using it **SHOULD NOT** add `MOZ_lightmap` to
 
 ## Known Implementations
 
-- [Mozilla Hubs](https://github.com/Hubs-Foundation/hubs/blob/master/src/components/gltf-model-plus.js): loader. Always uses `TEXCOORD_1`.
+- [Mozilla Hubs](https://github.com/Hubs-Foundation/hubs/blob/master/src/components/gltf-model-plus.js): loader.
 - [Hubs Blender add-on](https://github.com/Hubs-Foundation/hubs-blender-exporter): Blender import and export.
 - [Spoke](https://github.com/Hubs-Foundation/Spoke/tree/master/src/editor/gltf/extensions): Hubs scene editor, import and export.
 - [hubs-glb-tools](https://github.com/Hubs-Foundation/hubs-glb-tools/blob/master/src/MozLightmap.ts): glTF-Transform extension.
-- [iR Engine (formerly Ethereal Engine)](https://github.com/ir-engine/ir-engine): loader and glTF-Transform extension. Always uses `TEXCOORD_1`.
+- [iR Engine (formerly Ethereal Engine)](https://github.com/ir-engine/ir-engine): loader and glTF-Transform extension.
 - [EE Bridge Unity Exporter](https://github.com/EtherealEngine/EE-Bridge-Unity-Export): Unity export.
 - [Third Room](https://github.com/matrix-org/thirdroom), [Webaverse](https://github.com/webaverse/app), and [aframe-gltf-model-plus](https://github.com/c-frame/aframe-gltf-model-plus): loaders.
 - [three.js](https://github.com/mrdoob/three.js/pull/34950): loader and exporter plugins (pull request, in progress).
