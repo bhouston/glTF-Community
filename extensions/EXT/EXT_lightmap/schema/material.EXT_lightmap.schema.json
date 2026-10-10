@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "EXT_lightmap glTF Material Extension",
+    "type": "object",
+    "description": "glTF extension that defines a baked light map containing linear diffuse irradiance.",
+    "allOf": [ { "$ref": "textureInfo.schema.json" } ],
+    "properties": {
+        "index": { },
+        "texCoord": { },
+        "intensity": {
+            "type": "number",
+            "description": "A linear multiplier applied to the light map texel values.",
+            "default": 1.0,
+            "minimum": 0.0,
+            "gltf_detailedDescription": "A linear multiplier applied to the RGB values sampled from the light map. The product is the diffuse irradiance incident on the surface."
+        },
+        "extensions": { },
+        "extras": { }
+    },
+    "required": [ "index" ]
+}
