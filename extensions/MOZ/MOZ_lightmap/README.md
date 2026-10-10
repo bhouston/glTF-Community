@@ -27,12 +27,12 @@ A light map is a texture containing precomputed (baked) diffuse lighting for a s
 
 This extension adds a light map to a glTF material. The light map stores linear RGB diffuse irradiance, usually in a dedicated, non-overlapping texture coordinate set. The renderer adds this irradiance to the material's diffuse lighting. Light maps do not affect specular reflections.
 
-The baked irradiance may contain either:
+This extension does not restrict which lighting is baked. Common examples include:
 
-- **indirect diffuse lighting only**, for scenes where direct lighting from some or all lights is still computed at runtime, or
+- **indirect diffuse lighting only**, for scenes where direct lighting from some or all lights is still computed at runtime, and
 - **total diffuse lighting** (direct and indirect), for fully baked scenes.
 
-Both are diffuse irradiance and are rendered the same way. The content creator chooses which one to bake and which lights to keep in the scene (see [Baked and Dynamic Lights](#baked-and-dynamic-lights)).
+Any combination is valid, for example direct lighting from only some lights, or environment lighting only. Whatever it contains is diffuse irradiance and is rendered the same way. The content creator chooses what to bake and which lights to keep in the scene (see [Baked and Dynamic Lights](#baked-and-dynamic-lights)).
 
 <figure>
 <img src="./figures/cornell_box.jpg"/>
@@ -122,10 +122,10 @@ Without this extension, an unlit material displays `baseColor` unchanged, which 
 
 ### Baked and Dynamic Lights
 
-The renderer always adds light map irradiance on top of whatever lighting it computes at runtime. To avoid counting the same light twice, the content creator decides which lighting is baked and which is dynamic:
+The renderer always adds light map irradiance on top of whatever lighting it computes at runtime. To avoid counting the same light twice, the content creator decides which lighting is baked and which is dynamic. Lights whose direct diffuse contribution was baked **SHOULD NOT** also illuminate the light-mapped surfaces at runtime. For example:
 
 - If the light map contains **indirect diffuse lighting only**, the scene's lights (for example, defined with `KHR_lights_punctual`) remain in the asset and supply direct lighting and all specular lighting at runtime.
-- If the light map contains **total diffuse lighting**, lights whose direct contribution was baked **SHOULD NOT** also illuminate the light-mapped surfaces at runtime. They can be removed from the asset or kept only for specular highlights or unbaked objects, depending on what the target renderer supports.
+- If the light map contains **total diffuse lighting**, the baked lights can be removed from the asset or kept only for specular highlights or unbaked objects, depending on what the target renderer supports.
 
 Light maps usually include light from the environment (sky) as well. Applications **SHOULD NOT** also add diffuse lighting from the same environment to light-mapped materials, whether it comes from image-based lighting or from ambient or hemisphere lights. Specular image-based lighting is unaffected.
 
